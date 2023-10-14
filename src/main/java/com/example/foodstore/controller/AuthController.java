@@ -3,14 +3,12 @@ package com.example.foodstore.controller;
 import com.example.foodstore.dto.JWTAuthRespone;
 import com.example.foodstore.dto.LoginDto;
 import com.example.foodstore.service.AuthService;
+import com.example.foodstore.service.UserDetailsService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
@@ -30,6 +28,13 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<JWTAuthRespone> authenticate(@RequestBody LoginDto loginDto) {
         String token = authService.login(loginDto);
+        JWTAuthRespone jwtAuthRespone = new JWTAuthRespone();
+        jwtAuthRespone.setAccessToken(token);
+        return ResponseEntity.ok(jwtAuthRespone);
+    }
+    @PostMapping("/register")
+    public ResponseEntity<JWTAuthRespone> register(@RequestBody LoginDto loginDto) {
+        String token = authService.register(loginDto);
         JWTAuthRespone jwtAuthRespone = new JWTAuthRespone();
         jwtAuthRespone.setAccessToken(token);
         return ResponseEntity.ok(jwtAuthRespone);
