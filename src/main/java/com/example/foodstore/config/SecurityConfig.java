@@ -28,14 +28,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http ) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("auth/**").permitAll()
-                        .requestMatchers("admin/**").hasRole("ADMIN")
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("auth/**", "api/v1/category/all-active").permitAll()
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers("admin/**", "api/v1/category/**").hasRole("ADMIN")
                         .requestMatchers("user-details/**").hasRole("USER")
                         .anyRequest().authenticated());
         http.exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
+    private static final String[] AUTH_WHITELIST = { "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yml",
+            "/swagger-ui.html" };
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
