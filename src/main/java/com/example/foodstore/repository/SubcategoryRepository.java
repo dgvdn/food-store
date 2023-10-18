@@ -11,5 +11,5 @@ import java.util.List;
 public interface SubcategoryRepository extends JpaRepository<Subcategory, Long> {
     List<Subcategory> findAllByCategoryId(Long id);
 
-    List<Subcategory> findAllByCategoryIdAndIsActive(Long id);
+    List<Subcategory> findAllByCategoryIdAndIsActiveTrue(Long id);
 }

@@ -25,7 +25,17 @@ public class SubcategoryService {
         return subcategoryRepository.save(subcategory);
     }
     public Subcategory update(Subcategory subcategory) {
-        return subcategoryRepository.save(subcategory);
+        Subcategory subcategoryUpdate = null;
+        try {
+            subcategoryUpdate = findById(subcategory.getId());
+            subcategoryUpdate.setName(subcategory.getName());
+            subcategoryUpdate.setActive(subcategory.isActive());
+            subcategoryUpdate.setDeleted(subcategory.isDeleted());
+            subcategoryRepository.save(subcategoryUpdate);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return subcategoryUpdate;
     }
     public void deleteById(Long id) {
         Subcategory subcategory = subcategoryRepository.findById(id).orElse(null);
@@ -39,7 +49,7 @@ public class SubcategoryService {
         return subcategoryRepository.findAllByCategoryId(id);
     }
     public List<Subcategory> findAllByCategoryIdAndIsActive(Long id) {
-        return subcategoryRepository.findAllByCategoryIdAndIsActive(id);
+        return subcategoryRepository.findAllByCategoryIdAndIsActiveTrue(id);
     }
     public void active(Long id) {
         Subcategory subcategory = subcategoryRepository.findById(id).orElse(null);
