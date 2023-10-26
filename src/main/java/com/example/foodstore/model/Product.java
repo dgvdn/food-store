@@ -15,7 +15,7 @@ public class Product {
     private Long id;
     private String name;
     private String description;
-    private Long price;
+    private int price;
     private String img;
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -31,7 +31,7 @@ public class Product {
 //    private boolean isRecommended;
 //    private boolean isNew;
 //    private boolean isPopular;
-    public Product(String name, String description, Long price, String img, Category category, Subcategory subCategory) {
+    public Product(String name, String description, int price, String img, Category category, Subcategory subCategory) {
         this.name = name;
         this.description = description;
         this.price = price;

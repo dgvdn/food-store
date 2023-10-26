@@ -1,11 +1,10 @@
 package com.example.foodstore.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -24,4 +23,6 @@ public class UserDetails {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @OneToOne(mappedBy = "userDetails")
+    private Cart cart;
 }

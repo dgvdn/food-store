@@ -3,6 +3,7 @@ package com.example.foodstore.config;
 import com.example.foodstore.jwt.JWTAuthenticationEntryPoint;
 import com.example.foodstore.jwt.JwtAuthenticationFilter;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,16 +24,16 @@ public class SecurityConfig {
     }
 
     private JWTAuthenticationEntryPoint point;
-
+    @Autowired
     private JwtAuthenticationFilter filter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http ) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("auth/**", "api/v1/category/all-active", "/api/v1/subcategory/active").permitAll()
+                        .requestMatchers("auth/**", "api/v1/category/all-active", "/api/v1/subcategory/category/active").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers("admin/**", "api/v1/category/**", "/api/v1/subcategory/**").hasRole("ADMIN")
-                        .requestMatchers("user-details/**").hasRole("USER")
+                        .requestMatchers("user-details/**", "/api/v1/cart/**").hasRole("USER")
                         .anyRequest().authenticated());
         http.exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
