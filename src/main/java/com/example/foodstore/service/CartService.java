@@ -6,7 +6,6 @@ import com.example.foodstore.model.UserDetails;
 import com.example.foodstore.repository.CartItemRepository;
 import com.example.foodstore.repository.CartRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -77,5 +76,33 @@ public class CartService {
     public Cart getCart() {
         UserDetails userDetails = userDetailsService.findByUsername(UserDetailsService.getCurrentUsername());
         return userDetails.getCart();
+    }
+
+    public void removeCartItem(Long productId) {
+        CartItem cartItem = findCartItemByProductId(getCart().getCartItems(), productId);
+        if (cartItem == null) {
+            return;
+        }
+        Cart cart = cartItem.getCart();
+        cart.setTotalQuantity(cart.getTotalQuantity() - cartItem.getQuantity());
+        cart.setTotalPrice(cart.getTotalPrice() - cartItem.getTotalPrice());
+        cart.getCartItems().remove(cartItem);
+        cartRepository.save(cart);
+        cartItemRepository.delete(cartItem);
+    }
+
+    public Cart updateCartItem(Long id, int quantity) {
+        CartItem cartItem = cartItemRepository.findById(id).orElse(null);
+        if (cartItem == null) {
+            return null;
+        }
+        Cart cart = cartItem.getCart();
+        cart.setTotalQuantity(cart.getTotalQuantity() - cartItem.getQuantity() + quantity);
+        cart.setTotalPrice(cart.getTotalPrice() - cartItem.getTotalPrice() + cartItem.getProduct().getPrice() * quantity);
+        cartItem.setQuantity(quantity);
+        cartItem.setTotalPrice(cartItem.getProduct().getPrice() * quantity);
+        cartRepository.save(cart);
+        cartItemRepository.save(cartItem);
+        return cart;
     }
 }

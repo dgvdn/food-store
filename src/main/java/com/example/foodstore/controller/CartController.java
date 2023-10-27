@@ -37,4 +37,16 @@ public class CartController {
         UserDetails userDetails = userDetailsService.findByUsername(UserDetailsService.getCurrentUsername());
         return ResponseEntity.ok(new CartDto(userDetails.getCart()));
     }
+
+    @PostMapping("/remove")
+    public ResponseEntity<String> removeFromCart(Long productId) {
+        cartService.removeCartItem(productId);
+        return ResponseEntity.ok("Product removed from cart");
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<String> updateCartItem(Long cartItemId, int quantity) {
+        cartService.updateCartItem(cartItemId, quantity);
+        return ResponseEntity.ok("Cart updated");
+    }
 }
