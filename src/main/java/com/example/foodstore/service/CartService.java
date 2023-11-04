@@ -91,10 +91,10 @@ public class CartService {
         cartItemRepository.delete(cartItem);
     }
 
-    public Cart updateCartItem(Long id, int quantity) {
+    public void updateCartItem(Long id, int quantity) {
         CartItem cartItem = cartItemRepository.findById(id).orElse(null);
         if (cartItem == null) {
-            return null;
+            return;
         }
         Cart cart = cartItem.getCart();
         cart.setTotalQuantity(cart.getTotalQuantity() - cartItem.getQuantity() + quantity);
@@ -103,6 +103,5 @@ public class CartService {
         cartItem.setTotalPrice(cartItem.getProduct().getPrice() * quantity);
         cartRepository.save(cart);
         cartItemRepository.save(cartItem);
-        return cart;
     }
 }

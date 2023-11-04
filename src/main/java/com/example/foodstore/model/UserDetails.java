@@ -3,6 +3,8 @@ package com.example.foodstore.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,4 +27,6 @@ public class UserDetails {
     private User user;
     @OneToOne(mappedBy = "userDetails")
     private Cart cart;
+    @OneToMany(mappedBy = "userDetails")
+    private List<Order> orders;
 }

@@ -28,7 +28,7 @@ public class SecurityConfig {
     private JwtAuthenticationFilter filter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http ) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable).cors(AbstractHttpConfigurer::disable)
+        http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("auth/**", "api/v1/category/all-active", "/api/v1/subcategory/category/active").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
