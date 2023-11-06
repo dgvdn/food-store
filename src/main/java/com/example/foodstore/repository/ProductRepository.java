@@ -1,5 +1,6 @@
 package com.example.foodstore.repository;
 
+import com.example.foodstore.model.Category;
 import com.example.foodstore.model.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,4 +21,5 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByNameContaining(String name);
     List<Product> findAllByCategory_IdAndNameContaining(Long id, String name);
 
+    List<Product> findTop6ByCategoryOrderByIdDesc(Category category);
 }

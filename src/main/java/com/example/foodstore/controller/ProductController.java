@@ -1,11 +1,15 @@
 package com.example.foodstore.controller;
 
+import com.example.foodstore.dto.CategoryDto;
 import com.example.foodstore.model.Product;
 import com.example.foodstore.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -53,6 +57,14 @@ public class ProductController {
     @GetMapping("/sorted-by-price")
     public Page<Product> findAllSortedByPrice(@RequestParam int page, @RequestParam String sort) {
         return productService.findAllSortedByPrice(page, sort);
+    }
+    @GetMapping("/categories")
+    public ResponseEntity<List<CategoryDto>> getAllCategories() {
+        List<CategoryDto> categories = productService.getCategoriesWithProducts();
+        if (categories.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(categories);
     }
 
 }

@@ -1,6 +1,10 @@
 package com.example.foodstore.service;
 
+import com.example.foodstore.dto.CategoryDto;
+import com.example.foodstore.dto.ProductDto;
+import com.example.foodstore.model.Category;
 import com.example.foodstore.model.Product;
+import com.example.foodstore.repository.CategoryRepository;
 import com.example.foodstore.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,12 +13,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     public boolean existsById(Long id) {
         return productRepository.existsById(id);
@@ -83,4 +92,21 @@ public class ProductService {
         return productRepository.findAll(pageable);
     }
 
+    public List<CategoryDto> getCategoriesWithProducts(){
+        List<Category> categories = categoryRepository.findAll();
+        List<CategoryDto> categoryDtos = new ArrayList<>();
+
+        for (Category category : categories) {
+           List<Product> products = productRepository.findTop6ByCategoryOrderByIdDesc(category);
+
+           // Map category and product to dtos
+              CategoryDto categoryDto = new CategoryDto(category.getId(), category.getName());
+              List<ProductDto> productDtos = products.stream()
+                      .map(product -> new ProductDto(product.getId(), product.getName(), product.getDescription(), product.getPrice(), product.getImg()))
+                      .toList();
+                categoryDto.setProducts(productDtos);
+                categoryDtos.add(categoryDto);
+        }
+        return categoryDtos;
+    }
 }

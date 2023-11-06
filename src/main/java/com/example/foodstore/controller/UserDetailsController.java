@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/user-details")
@@ -15,8 +18,9 @@ public class UserDetailsController {
     private UserDetailsService userDetailsService;
 
     @GetMapping("/info")
-    public ResponseEntity<String> info() {
-        String response = UserDetailsService.getCurrentUsername();
+    public ResponseEntity<Map<String, String>> info() {
+        Map<String, String> response = new HashMap<>();
+        response.put("username", UserDetailsService.getCurrentUsername());
         return ResponseEntity.ok(response);
     }
 
