@@ -67,4 +67,18 @@ public class ProductController {
         return ResponseEntity.ok(categories);
     }
 
+    // get products by category name
+    @GetMapping("/category/{name}")
+    public List<Product> findAllByCategory_Name(@PathVariable String name) {
+        return productService.getProductsByCategoryName(name);
+    }
+
+    // sort products by price in a category or subcategory
+    @GetMapping("/category/{name}/sorted-by-price")
+    public List<Product> findAllByCategory_NameSortedByPrice(@PathVariable String name, @RequestParam String sort) {
+        if (name.equals("all"))
+            return productService.getProductsSortedByPrice(sort);
+
+        return productService.getProductsByCategoryNameSortedByPrice(name, sort);
+    }
 }

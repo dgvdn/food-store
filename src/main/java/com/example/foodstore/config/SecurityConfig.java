@@ -42,7 +42,7 @@ public class SecurityConfig {
         return http.build();
     }
     private static final String[] AUTH_WHITELIST = { "/swagger-ui/**", "/v3/api-docs/**", "/v3/api-docs.yml",
-            "/swagger-ui.html" , "/api/v1/product/categories"};
+            "/swagger-ui.html" , "/api/v1/product/categories", "/api/v1/subcategory/category"};
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();

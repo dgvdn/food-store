@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -108,5 +109,33 @@ public class ProductService {
                 categoryDtos.add(categoryDto);
         }
         return categoryDtos;
+    }
+
+    // get products by category name
+    public List<Product> getProductsByCategoryName(String name) {
+        List<Product> products = productRepository.findAllByCategory_Name(name);
+        List<Product> products1 = productRepository.findAllBySubCategory_Name(name);
+        products.addAll(products1);
+        return products;
+    }
+
+    // sort products by price in category or subcategory filter
+    public List<Product> getProductsByCategoryNameSortedByPrice(String name, String sort) {
+        List<Product> products = productRepository.findAllByCategory_Name(name);
+        List<Product> products1 = productRepository.findAllBySubCategory_Name(name);
+        products.addAll(products1);
+        if (sort.equals("asc")) {
+            return products.stream().sorted(Comparator.comparing(Product::getPrice)).collect(Collectors.toList());
+        } else {
+            return products.stream().sorted(Comparator.comparing(Product::getPrice).reversed()).collect(Collectors.toList());
+        }
+    }
+
+    public List<Product> getProductsSortedByPrice(String sort) {
+        if (sort.equals("asc")) {
+            return productRepository.findAll().stream().sorted(Comparator.comparing(Product::getPrice)).collect(Collectors.toList());
+        } else {
+            return productRepository.findAll().stream().sorted(Comparator.comparing(Product::getPrice).reversed()).collect(Collectors.toList());
+        }
     }
 }

@@ -22,4 +22,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByCategory_IdAndNameContaining(Long id, String name);
 
     List<Product> findTop6ByCategoryOrderByIdDesc(Category category);
+
+    List<Product> findAllByCategory_Name(String name);
+
+    List<Product> findAllBySubCategory_Name(String name);
 }
