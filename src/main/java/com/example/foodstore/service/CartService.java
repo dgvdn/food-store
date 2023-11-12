@@ -78,8 +78,8 @@ public class CartService {
         return userDetails.getCart();
     }
 
-    public void removeCartItem(Long productId) {
-        CartItem cartItem = findCartItemByProductId(getCart().getCartItems(), productId);
+    public void removeCartItem(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId).get();
         if (cartItem == null) {
             return;
         }

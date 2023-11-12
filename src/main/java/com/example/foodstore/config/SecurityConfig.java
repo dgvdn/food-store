@@ -2,7 +2,6 @@ package com.example.foodstore.config;
 
 import com.example.foodstore.jwt.JWTAuthenticationEntryPoint;
 import com.example.foodstore.jwt.JwtAuthenticationFilter;
-import io.swagger.models.HttpMethod;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,7 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("auth/**", "api/v1/category/all-active", "/api/v1/subcategory/category/active","/api/v1/product/**").permitAll()
                         .requestMatchers(AUTH_WHITELIST).permitAll()
                         .requestMatchers("admin/**", "api/v1/category/**", "/api/v1/subcategory/**").hasRole("ADMIN")
-                        .requestMatchers("user-details/**", "/api/v1/cart/**").hasRole("USER")
+                        .requestMatchers("user-details/**", "/api/v1/cart/**", "/api/v1/cart/update/**").hasRole("USER")
                         .anyRequest().authenticated());
         http.exceptionHandling(ex -> ex.authenticationEntryPoint(point))
                 .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);

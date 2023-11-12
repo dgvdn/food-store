@@ -9,11 +9,9 @@ import com.example.foodstore.service.UserDetailsService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
@@ -33,18 +31,25 @@ public class CartController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<CartDto> getCart() {
+    public ResponseEntity<?> getCart() {
         UserDetails userDetails = userDetailsService.findByUsername(UserDetailsService.getCurrentUsername());
+
+        if (userDetails == null || userDetails.getCart() == null) {
+            // If userDetails or the cart is null, it means the cart does not exist
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Cart not found\"}");
+        }
+
         return ResponseEntity.ok(new CartDto(userDetails.getCart()));
     }
 
-    @PostMapping("/remove")
-    public ResponseEntity<String> removeFromCart(Long productId) {
-        cartService.removeCartItem(productId);
+
+    @DeleteMapping("/remove")
+    public ResponseEntity<String> removeFromCart(Long cartItemId) {
+        cartService.removeCartItem(cartItemId);
         return ResponseEntity.ok("Product removed from cart");
     }
 
-    @PostMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<String> updateCartItem(Long cartItemId, int quantity) {
         cartService.updateCartItem(cartItemId, quantity);
         return ResponseEntity.ok("Cart updated");
