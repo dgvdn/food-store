@@ -22,7 +22,6 @@ public class JwtTokenProvider {
     private String jwtSecret;
     @Value("${jwt.expiration}")
     private long jwtExpiration;
-
     // generate JWT token
     public String generateToken(Authentication authentication) {
         String username = authentication.getName();
