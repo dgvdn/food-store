@@ -15,10 +15,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -28,6 +25,8 @@ import java.util.*;
 public class CheckoutController {
 
     private final UserDetailsService userDetailsService;
+
+    private static String sessionId;
     @PostMapping("/create-checkout-session")
     public ResponseEntity<String> checkout() throws StripeException {
         Stripe.apiKey = "sk_test_51MiqQ3AmreQjQSXI69Et0IFMRfyMteL0oNVEQJFC2bz5nQrXjQXfHeXdamduqeY8Mox5z2ukwYC4QmIXyX38X5kP00MsMUAA2Y";
@@ -71,14 +70,27 @@ public class CheckoutController {
                         .build();
         try{
             Session session = Session.create(params);
+            sessionId = session.getId();
+            System.out.printf(sessionId);
             System.out.printf("Session URl: %s\n", session.getUrl());
-            return ResponseEntity.status(303)
-                    .header(HttpHeaders.LOCATION, session.getUrl())
-                    .build();
+           return ResponseEntity.ok().body(session.getUrl());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    // check checkout completed
+    @GetMapping("/check-checkout")
+    public ResponseEntity<String> checkCheckout() throws StripeException {
+        Stripe.apiKey = "sk_test_51MiqQ3AmreQjQSXI69Et0IFMRfyMteL0oNVEQJFC2bz5nQrXjQXfHeXdamduqeY8Mox5z2ukwYC4QmIXyX38X5kP00MsMUAA2Y";
+        Session session = Session.retrieve(sessionId);
+        if (session.getPaymentStatus().equals("paid")) {
+            return ResponseEntity.ok().body("Checkout completed");
+        }   
+        return ResponseEntity.badRequest().body("Checkout not completed");
+    }
+
+
 
 
 }
