@@ -9,6 +9,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/order")
@@ -33,5 +37,26 @@ public class OrderController {
     public ResponseEntity<OrderDto> getOrder(@PathVariable Long id) {
         // Your code to retrieve and return the order by ID
         return ResponseEntity.ok(new OrderDto(orderService.findById(id)));
-    }   
+    }
+
+    //get list order by user
+    @GetMapping("/user")
+    public ResponseEntity<List<OrderDto>> getOrdersByUser() {
+        UserDetails userDetails = userDetailsService.findByUsername(UserDetailsService.getCurrentUsername());
+        if (userDetails == null) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        List<Order> userOrders = orderService.findAllByUserDetails(userDetails);
+
+        // Reverse the order of the list
+        Collections.reverse(userOrders);
+
+        // Convert the list of orders to a list of DTOs
+        List<OrderDto> orderDtos = userOrders.stream().map(OrderDto::new).collect(Collectors.toList());
+
+        return ResponseEntity.ok(orderDtos);
+    }
+
+
 }
